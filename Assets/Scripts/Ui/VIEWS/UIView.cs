@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -83,54 +82,6 @@ public class UIView : MonoBehaviour
         this.ActiveView(!closeOnNewView);
     }
 
-    private void Navigate(float directionVertical)
-    {
-        if (directionVertical > 0)
-        {
-            NavigateUp();
-        }
-        else if (directionVertical < 0)
-        {
-            NavigateDown();
-        }
-    }
-
-    private void NavigateDown()
-    {
-        currentIndex++;
-        if (currentIndex >= selectables.Count)
-        {
-            currentIndex = 0;
-        }
-        if (selectables[currentIndex].IsInteractable())
-        {
-            EventSystem.current.SetSelectedGameObject(selectables[currentIndex].gameObject);
-            Debug.Log("Current Button:" + selectables[currentIndex].gameObject.name);
-        }
-        else
-        {
-            NavigateDown();
-        }
-    }
-
-    private void NavigateUp()
-    {
-        currentIndex--;
-        if (currentIndex < 0)
-        {
-            currentIndex = selectables.Count - 1;
-        }
-
-        if (selectables[currentIndex].IsInteractable())
-        {
-            GUIController.Instance.SetCurrentSelectedButton(selectables[currentIndex]);
-        }
-        else
-        {
-            NavigateUp();
-        }
-    }
-
     private void DisableView_OnClick(UIView viewToDisable)
     {
         viewToDisable.DisableView();
@@ -203,5 +154,52 @@ public class UIView : MonoBehaviour
     public virtual Selectable GetDefaultSelectable()
     {
         return defaultSelectable;
+    }
+
+    private void Navigate(float directionVertical)
+    {
+        if (directionVertical > 0)
+        {
+            NavigateUp();
+        }
+        else if (directionVertical < 0)
+        {
+            NavigateDown();
+        }
+    }
+
+    private void NavigateDown()
+    {
+        currentIndex++;
+        if (currentIndex >= selectables.Count)
+        {
+            currentIndex = 0;
+        }
+        if (selectables[currentIndex].IsInteractable())
+        {
+            EventSystem.current.SetSelectedGameObject(selectables[currentIndex].gameObject);
+        }
+        else
+        {
+            NavigateDown();
+        }
+    }
+
+    private void NavigateUp()
+    {
+        currentIndex--;
+        if (currentIndex < 0)
+        {
+            currentIndex = selectables.Count - 1;
+        }
+
+        if (selectables[currentIndex].IsInteractable())
+        {
+            GUIController.Instance.SetCurrentSelectedButton(selectables[currentIndex]);
+        }
+        else
+        {
+            NavigateUp();
+        }
     }
 }

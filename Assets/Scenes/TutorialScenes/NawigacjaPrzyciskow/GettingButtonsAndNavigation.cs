@@ -160,7 +160,6 @@ public class GettingButtonsAndNavigation : MonoBehaviour
             return;
         }
 
-
         ButtonsList = new List<Button>(); 
         foreach (Transform child in ContentWithButtons.transform)
         {

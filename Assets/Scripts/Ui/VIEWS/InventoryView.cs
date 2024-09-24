@@ -29,12 +29,16 @@ public class InventoryView : UIView
     private InventoryState inventoryState = InventoryState.SelectSoul;
     private int currentScrolledPosition = 0;
 
-
     protected override void Awake()
     {
         base.Awake();
         contentParent = (RectTransform)soulItemPlaceholder.transform.parent;
         InitializeInventoryItems();
+    }
+
+    private void OnEnable()
+    {
+        ClearSoulInformation();
     }
 
     protected override void Update()
@@ -85,6 +89,40 @@ public class InventoryView : UIView
         }
     }
 
+    public override void HandleCancel()
+    {
+        switch (inventoryState)
+        {
+            case InventoryState.SelectSoul:
+                backButon.onClick.Invoke();
+                break;
+            case InventoryState.ActionMenu:
+                inventoryState = InventoryState.SelectSoul;
+                GUIController.Instance.SetCurrentSelectedButton(GetDefaultSelectable());
+                break;
+            case InventoryState.Popup:
+                break;
+        }
+    }
+
+    public void SetInactiveState()
+    {
+        inventoryState = InventoryState.Popup;
+    }
+
+    public override Selectable GetDefaultSelectable()
+    {
+
+        switch (inventoryState)
+        {
+            case InventoryState.SelectSoul:
+                return TrySelectSoulButton();
+            case InventoryState.ActionMenu:
+                return TrySelectActionButton();
+        }
+        return null;
+    }
+
     private void Navigate(float verticalInput, float horizontalInput)
     {
 
@@ -119,8 +157,6 @@ public class InventoryView : UIView
 
     private void AdjustScrollViewPostion(int currentIndex, int constraintCount)
     {
-        Debug.Log("Current Index: " + currentIndex);
-        Debug.Log("Row number: " + currentIndex / constraintCount);
         if (currentIndex / constraintCount < currentScrolledPosition)
         {
 
@@ -129,32 +165,10 @@ public class InventoryView : UIView
         }
         else if (currentIndex / constraintCount >= currentScrolledPosition + 4)
         {
-            Debug.Log("SCROLL DOWN");
             scrollRect.verticalNormalizedPosition = Mathf.Clamp01(scrollRect.verticalNormalizedPosition - (GRID_SPACE_HEIGHT / (scrollRect.content.rect.height - scrollRect.viewport.rect.height)));
             currentScrolledPosition++;
 
         }
-    }
-
-    public override void HandleCancel()
-    {
-        switch (inventoryState)
-        {
-            case InventoryState.SelectSoul:
-                backButon.onClick.Invoke();
-                break;
-            case InventoryState.ActionMenu:
-                inventoryState = InventoryState.SelectSoul;
-                GUIController.Instance.SetCurrentSelectedButton(GetDefaultSelectable());
-                break;
-            case InventoryState.Popup:
-                break;
-        }
-    }
-
-    public void SetInactiveState()
-    {
-        inventoryState = InventoryState.Popup;
     }
 
     private void InitializeInventoryItems()
@@ -168,10 +182,7 @@ public class InventoryView : UIView
         soulItemPlaceholder.gameObject.SetActive(false);
     }
 
-    private void OnEnable()
-    {
-        ClearSoulInformation();
-    }
+   
 
     private void ClearSoulInformation()
     {
@@ -316,19 +327,6 @@ public class InventoryView : UIView
             }
         }
 
-        return null;
-    }
-
-    public override Selectable GetDefaultSelectable()
-    {
-
-        switch (inventoryState)
-        {
-            case InventoryState.SelectSoul:
-                return TrySelectSoulButton();
-            case InventoryState.ActionMenu:
-                return TrySelectActionButton();
-        }
         return null;
     }
 }

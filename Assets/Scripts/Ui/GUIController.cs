@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -182,9 +181,6 @@ public class GUIController : MonoBehaviour
 
     private void HandleGameNavigation()
     {
-
-        Debug.Log(menuButton.transform.position.x);
-        Debug.Log(inventoryButton.transform.position.x);
         if (viewStack.Count == 0 && !IsCombatStateActive)
         {
 
